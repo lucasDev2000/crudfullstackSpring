@@ -3,66 +3,74 @@ package com.exemplo.crudmongo.controller;
 import com.exemplo.crudmongo.Model.Pessoa;
 import com.exemplo.crudmongo.service.PessoaService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
+import java.util.HashMap;
 
 import java.util.List;
 
 /**
  * Controlador REST para gerenciar operações relacionadas à entidade Pessoa.
  */
-@RestController // Indica que esta classe é um controlador REST
-@RequestMapping("/pessoas") // Define o endpoint base para as requisições
-@CrossOrigin(origins = "*") // Permite requisições de qualquer origem (CORS)
+@RestController
+@RequestMapping("/pessoas")
+@CrossOrigin(origins = "*")
 public class PessoaController {
 
-    private final PessoaService service; // Serviço responsável pela lógica de negócio
+    private final PessoaService service;
 
-    /**
-     * Injeta o serviço PessoaService via construtor.
-     */
     public PessoaController(PessoaService service) {
         this.service = service;
     }
 
-    /**
-     * Retorna a lista de todas as pessoas cadastradas.
-     * Método acessível via GET em /pessoas
-     */
     @GetMapping
     public List<Pessoa> listar() {
         return service.listarTodas();
     }
 
-    /**
-     * Cria uma nova pessoa.
-     * Método acessível via POST em /pessoas
-     * @param pessoa Objeto Pessoa recebido no corpo da requisição
-     * @return Pessoa criada
-     */
     @PostMapping
     public Pessoa criar(@RequestBody Pessoa pessoa) {
         return service.salvar(pessoa);
     }
 
-    /**
-     * Atualiza uma pessoa existente pelo ID.
-     * Método acessível via PUT em /pessoas/{id}
-     * @param id Identificador da pessoa a ser atualizada
-     * @param pessoa Dados atualizados da pessoa
-     * @return Pessoa atualizada
-     */
     @PutMapping("/{id}")
-    public Pessoa atualizar(@PathVariable Long id, 
-    @RequestBody Pessoa pessoa) {
+    public Pessoa atualizar(@PathVariable Long id, @RequestBody Pessoa pessoa) {
         return service.atualizar(id, pessoa);
     }
 
-    /**
-     * Exclui uma pessoa pelo ID.
-     * Método acessível via DELETE em /pessoas/{id}
-     * @param id Identificador da pessoa a ser excluída
-     */
     @DeleteMapping("/{id}")
     public void excluir(@PathVariable Long id) {
         service.excluir(id);
     }
+
+    // buscar por nome
+    @GetMapping("/nome")
+    public List<Pessoa> buscarPorNome(@RequestParam("valor") String valor) {
+        return service.buscarPorNome(valor);
+    }
+
+    // buscar por idade
+    // GET /pessoas/idade?valor=30
+    @GetMapping("/idade")
+    public List<Pessoa> buscarPorIdade(@RequestParam("valor") Integer valor) {
+        return service.buscarPorIdade(valor);
+    }
+
+    // 👇 novo endpoint para paginação
+    @GetMapping("/pagina")
+    public ResponseEntity<Map<String, Object>> paginar(
+            @RequestParam(defaultValue = "0") Integer numero,
+            @RequestParam(defaultValue = "10") Integer tamanho
+    ) {
+        Page<Pessoa> page = service.paginar(numero, tamanho);
+        Map<String, Object> response = new HashMap<>();
+        response.put("conteudo", page.getContent());
+        response.put("pagina", page.getNumber());
+        response.put("tamanho", page.getSize());
+        response.put("totalElementos", page.getTotalElements());
+        response.put("totalPaginas", page.getTotalPages());
+        return ResponseEntity.ok(response);
+    }
+
 }
