@@ -1,6 +1,10 @@
 package com.exemplo.crudmongo.model;
 
 import jakarta.persistence.*;
+import java.util.Set;
+import java.util.HashSet;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "cursos")
@@ -11,10 +15,13 @@ public class Curso {
     private Long id;
 
     private String nome;
-
     private Integer cargaHoraria;
+    private Boolean ativo; 
 
-    private boolean ativo;
+    @ManyToMany(mappedBy = "cursos")
+    // NOVO: Anotação para quebrar a recursão (Lado Inverso)
+    @JsonBackReference
+    private Set<Pessoa> pessoas = new HashSet<>();
 
     public Curso() {
         // construtor vazio pro JPA
@@ -26,16 +33,20 @@ public class Curso {
         this.ativo = ativo;
     }
 
-    // getters e setters
+    // --- Getters e Setters ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
-
     public Integer getCargaHoraria() { return cargaHoraria; }
     public void setCargaHoraria(Integer cargaHoraria) { this.cargaHoraria = cargaHoraria; }
-
-    public boolean isAtivo() { return ativo; }
-    public void setAtivo(boolean ativo) { this.ativo = ativo; }
+    public Boolean getAtivo() { return ativo; }
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+    
+    public Set<Pessoa> getPessoas() {
+        return pessoas;
+    }
+    public void setPessoas(Set<Pessoa> pessoas) {
+        this.pessoas = pessoas;
+    }
 }

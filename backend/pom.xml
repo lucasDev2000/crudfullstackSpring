@@ -4,63 +4,58 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
                              
     <modelVersion>4.0.0</modelVersion>
-
-    <!-- Informações básicas do projeto -->
     <groupId>com.example</groupId>
     <artifactId>crudmongo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-
     <name>crudmongo</name>
-    <description>CRUD com Spring Boot + MongoDB</description>
+    <description>CRUD com Spring Boot + H2/JPA</description>
 
-    <!-- Define o projeto pai como Spring Boot Starter Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.2.5</version>
-        <relativePath/> <!-- Busca o parent no repositório -->
+        <relativePath/>
     </parent>
 
-    <!-- Define a versão do Java utilizada no projeto -->
     <properties>
         <java.version>17</java.version>
     </properties>
 
     <dependencies>
-        <!-- Dependência para aplicações web com Spring Boot -->
+        <!-- Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- REMOVER ESSE CÓDIGO 
+        <!-- JPA + H2 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency> -->
-
-        <!-- ADICIONAR A DEPENDÊNCIA DO JPA E DO H2 -->
-           <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-            </dependency>
-
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <scope>runtime</scope>
-            </dependency>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         
+        <!-- =================================================== -->
+        <!-- NOVO: DEPENDÊNCIA DE SEGURANÇA QUE ESTAVA FALTANDO -->
+        <!-- =================================================== -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         
-        <!-- Iniciar com dados Fakes -->
+        <!-- JavaFaker -->
         <dependency>
             <groupId>com.github.javafaker</groupId>
             <artifactId>javafaker</artifactId>
             <version>1.0.2</version>
         </dependency>
 
-        <!-- Lombok para geração automática de código (getters/setters, etc) -->
+        <!-- Lombok (Opcional, mas estava no seu pom) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -68,14 +63,14 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- Dependência para testes com Spring Boot -->
+        <!-- Testes -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         
-        <!-- Dependência para documentação OpenAPI/Swagger -->
+        <!-- Swagger/OpenAPI -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
@@ -85,7 +80,6 @@
     
     <build>
         <plugins>
-            <!-- Plugin para empacotar e executar aplicações Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

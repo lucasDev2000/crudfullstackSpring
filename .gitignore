@@ -84,3 +84,4 @@ ci-artifacts/
 # Evite ignorar arquivos de configuração necessários pelo projeto.
 # Se quiser versionar um exemplo de configuração, mantenha um arquivo de exemplo:
 # application.properties.example
+backend/target/
